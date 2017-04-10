@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jxmpp.stringprep.XmppStringprepException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,7 +202,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        //return email.contains("@");
+        return true;
     }
 
     private boolean isPasswordValid(String password) {
@@ -308,11 +319,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+
+            // Create a connection to the 192.168.5.7 server on a specific port.
+            /*XMPPTCPConnectionConfiguration config = null;
             try {
+                config = XMPPTCPConnectionConfiguration.builder()
+                            .setUsernameAndPassword(mEmail, mPassword)
+                            //.setXmppDomain("192.168.5.7")
+                            .setHost("192.168.5.7")
+                            .setXmppDomain("localhost")
+                            .setPort(5222)
+                            .build();
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+
+            // Create a connection to the 192.168.5.7 server.
+            AbstractXMPPConnection conn1 = new XMPPTCPConnection(config);
+            try {
+                conn1.connect();
+            } catch (SmackException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+
+            /*try {
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                return false;
+                return true;
             }
 
             for (String credential : DUMMY_CREDENTIALS) {
@@ -321,10 +361,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
+
+            //if (conn1.isConnected())
+                return true;
+
 
             // TODO: register the new account here.
-            return true;
+            //return false;
         }
 
         @Override
@@ -333,6 +377,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                // TODO: Show Toast and don't exit
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
