@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -325,7 +327,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             // Create a connection to the 192.168.5.7 server on a specific port.
-            XMPPTCPConnectionConfiguration config = null;
+           /* XMPPTCPConnectionConfiguration config = null;
             try {
                 config = XMPPTCPConnectionConfiguration.builder()
                         .setUsernameAndPassword(mEmail, mPassword)
@@ -352,7 +354,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
 
             /*try {
                 // Simulate network access.
@@ -371,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             // TODO: register the new account here.
-            return false;
+            return true;
         }
 
         @Override
@@ -381,6 +383,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 // TODO: Show Toast and don't exit
+                Intent i=new Intent(LoginActivity.this,MainActivity.class);
+                startActivity(i);
                 //finish();
                 Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
             } else {
