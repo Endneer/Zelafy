@@ -16,4 +16,8 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <!--Strings related to chat-->
+    <string name="hint_enter_message">Enter your message here!</string>
+    <string name="action_send">Send</string>
 </resources>

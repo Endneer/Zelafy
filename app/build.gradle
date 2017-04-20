@@ -31,24 +31,26 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
-    testCompile 'junit:junit:4.12'
-//    compile 'org.igniterealtime.smack:smack-java7:4.1.0'
+    //    compile 'org.igniterealtime.smack:smack-java7:4.1.0'
 //    compile 'org.igniterealtime.smack:smack-core:4.2.0'
 //    compile 'org.igniterealtime.smack:smack-im:4.2.0'
-    compile "org.igniterealtime.smack:smack-android-extensions:4.2.0"
-    compile 'org.igniterealtime.smack:smack-tcp:4.2.0'
-//    compile 'org.igniterealtime.smack:smack-extensions:4.1.0'
+    //    compile 'org.igniterealtime.smack:smack-extensions:4.1.0'
 //    compile 'org.igniterealtime.smack:smack-experimental:4.2.0'
 //    compile 'org.igniterealtime.smack:smack-legacy:4.2.0'
 //    compile 'org.igniterealtime.smack:smack-jingle-old:4.2.0'
 //    compile 'org.igniterealtime.smack:smack-resolver-dnsjava:4.2.0'
 //    compile 'org.igniterealtime.smack:smack-resolver-javax:4.2.0'
 //    compile 'org.igniterealtime.smack:smack-debug:4.2.0'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    compile 'org.igniterealtime.smack:smack-android-extensions:4.2.0'
+    compile 'org.igniterealtime.smack:smack-tcp:4.2.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
 }
 
 configurations {
     all*.exclude group: 'xpp3', module: 'xpp3'
 }
+
 
