@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zelafy.RegisterActivity">
+
+    <EditText
+        android:id="@+id/RegisterName"
+        android:layout_width="337dp"
+        android:layout_height="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="27dp"
+        tools:layout_editor_absoluteY="85dp" />
+
+    <EditText
+        android:id="@+id/RegisterEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:layout_below="@+id/RegisterName"
+        android:layout_alignLeft="@+id/RegisterName"
+        android:layout_alignStart="@+id/RegisterName"
+        android:layout_alignRight="@+id/RegisterName"
+        android:layout_alignEnd="@+id/RegisterName" />
+
+    <EditText
+        android:id="@+id/RegisterPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/RegisterEmail"
+        android:layout_alignLeft="@+id/RegisterEmail"
+        android:layout_alignRight="@+id/RegisterEmail"
+        android:layout_alignStart="@+id/RegisterEmail"
+        android:layout_below="@+id/RegisterEmail"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/RegisterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/RegisterPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="Register" />
+
+</RelativeLayout>
