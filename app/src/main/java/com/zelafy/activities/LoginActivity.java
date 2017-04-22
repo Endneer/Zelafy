@@ -72,8 +72,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     //Authentication refrences
     private FirebaseAuth mAuth;
-    public boolean authenticated=false;
-
+    public boolean authenticated = false;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //Get FireBase Instance
         mAuth = FirebaseAuth.getInstance();
+        //check if user already signed in
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() != null) {
+                    Intent Mainintent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(Mainintent);
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
     private void populateAutoComplete() {
@@ -161,7 +177,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
 
 
-
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -210,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     //Function of Register Button
-    public void Registering(View view){
+    public void Registering(View view) {
 
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
@@ -335,24 +350,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-           mAuth.signInWithEmailAndPassword(mEmail,mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-               @Override
-               public void onComplete(@NonNull Task<AuthResult> task) {
-                   if (task.isSuccessful()) {
-                       // Sign in success, update UI with the signed-in user's information
-                       FirebaseUser user = mAuth.getCurrentUser();
+            mAuth.signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        FirebaseUser user = mAuth.getCurrentUser();
 //                       updateUI(user);
-                       authenticated=true;
+                        authenticated = true;
 
-                   } else {
-                       // If sign in fails, display a message to the user.
+                    } else {
+                        // If sign in fails, display a message to the user.
 //                       updateUI(null);
 //                       Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
-                       authenticated=false;
-                   }
+                        authenticated = false;
+                    }
 
-               }
-           });
+                }
+            });
             // Create a connection to the 192.168.5.7 server on a specific port.
            /* XMPPTCPConnectionConfiguration config = null;
             try {
@@ -408,7 +423,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 // TODO: Show Toast and don't exit
-                Intent i=new Intent(LoginActivity.this,MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(i);
                 //finish();
 //                Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
