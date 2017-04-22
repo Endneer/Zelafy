@@ -34,7 +34,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zelafy.R;
-import com.zelafy.RegisterActivity;
+import com.zelafy.activities.RegisterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
-    //Authentication refrences
+    //Authentication references
     private FirebaseAuth mAuth;
     public boolean authenticated = false;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -108,13 +108,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //Get FireBase Instance
         mAuth = FirebaseAuth.getInstance();
-        //check if user already signed in
+        //Check if user already signed in
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    Intent Mainintent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(Mainintent);
+                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(mainIntent);
                 }
             }
         };
