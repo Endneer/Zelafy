@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    //Authentication Refrences
+    //Authentication References
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -109,9 +109,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == R.id.action_logout){
             logout();
         }
@@ -164,11 +161,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "ChAtS";
+                    return "Chats";
                 case 1:
-                    return "CONTACTS";
+                    return "Contacts";
                 case 2:
-                    return "ME";
+                    return "Me";
             }
             return null;
         }

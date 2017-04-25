@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.zelafy.R;
 
+import java.util.ArrayList;
+
 /**
  * This class contains the view holder for viewing added contacts names.
  * An Adapter for getting recycler view items from the backend.
@@ -73,6 +75,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     @Override
     public int getItemCount() {
         return contactsNamesAsStrings.length;
+    }
+
+    public void setContactsNamesAsStrings(String[] contactsNamesAsStrings) {
+        this.contactsNamesAsStrings = contactsNamesAsStrings;
     }
 
     public class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
