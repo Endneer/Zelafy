@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.zelafy.R;
 import com.zelafy.activities.ChatActivity;
-import com.zelafy.activities.MainActivity;
 import com.zelafy.adapters.ContactsAdapter;
+
 
 public class ContactsTabFragment extends Fragment implements ContactsAdapter.ContactClickListener {
 
@@ -56,6 +56,7 @@ public class ContactsTabFragment extends Fragment implements ContactsAdapter.Con
 
         return rootView;
     }
+
 
     @Override
     public void onContactClick(int clickedContactIndex) {

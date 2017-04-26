@@ -7,9 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zelafy.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the view holder for viewing added contacts names.
@@ -20,20 +26,76 @@ import java.util.ArrayList;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
 
-    String[] contactsNamesAsStrings = {"Software group", "OS group", "John", "Doe", "Smith", "Friends"};
+    //String[] contactsNamesAsStrings = {"Software group", "OS group", "John", "Doe", "Smith", "Friends"};
+
+    List<String> contactsNames;
+    List<String> contactsIds;
+    private DatabaseReference mDatabase;
+
 
     final private ContactClickListener mOnClickListener;
+
+
+    public ContactsAdapter(ContactClickListener mOnClickListener) {
+        this.mOnClickListener = mOnClickListener;
+        contactsNames = new ArrayList<>();
+        contactsIds = new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Users").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String name = dataSnapshot.child("name").getValue(String.class);
+                contactsNames.add(name);
+                contactsIds.add(dataSnapshot.getKey());
+                notifyItemInserted(contactsNames.size() - 1);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                String name = dataSnapshot.child("name").getValue(String.class);
+                String nameKey = dataSnapshot.getKey();
+
+                int nameIndex = contactsIds.indexOf(nameKey);
+                if (nameIndex > -1) {
+                    contactsNames.set(nameIndex, name);
+                    notifyItemChanged(nameIndex);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                String nameKey = dataSnapshot.getKey();
+
+                int nameIndex = contactsIds.indexOf(nameKey);
+                if (nameIndex > -1) {
+                    contactsNames.remove(nameIndex);
+                    contactsIds.remove(nameIndex);
+                    notifyItemRemoved(nameIndex);
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public interface ContactClickListener {
         void onContactClick(int clickedContactIndex);
     }
 
-    public ContactsAdapter(ContactClickListener mOnClickListener) {
-        this.mOnClickListener = mOnClickListener;
+    public void setContactsNames(List<String> contactsNames) {
+        this.contactsNames = contactsNames;
     }
 
     /**
-     *
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
@@ -51,7 +113,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         ContactsViewHolder viewHolder = new ContactsViewHolder(view);
 
         return viewHolder;
@@ -69,17 +131,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
      */
     @Override
     public void onBindViewHolder(ContactsViewHolder holder, int position) {
-        holder.bind(contactsNamesAsStrings[position]);
+        holder.bind(contactsNames.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return contactsNamesAsStrings.length;
+        return contactsNames.size();
     }
 
-    public void setContactsNamesAsStrings(String[] contactsNamesAsStrings) {
-        this.contactsNamesAsStrings = contactsNamesAsStrings;
-    }
 
     public class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -93,6 +152,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         }
 
         public void bind(String title) {
+
             contactName.setText(title);
         }
 
