@@ -61,6 +61,8 @@ public class ContactsTabFragment extends Fragment implements ContactsAdapter.Con
     @Override
     public void onContactClick(int clickedContactIndex) {
         Intent intent = new Intent(getContext(), ChatActivity.class);
+        String receiverId = mAdapter.getContactsIds().get(clickedContactIndex);
+        intent.putExtra(Intent.EXTRA_TEXT, receiverId);
         startActivity(intent);
     }
 }

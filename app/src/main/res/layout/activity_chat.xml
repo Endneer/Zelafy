@@ -11,7 +11,8 @@
         android:id="@+id/rv_messages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        tools:listitem="@layout/message_list_item">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -29,6 +30,7 @@
             android:hint="@string/hint_enter_message" />
 
         <Button
+            android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/action_send" />

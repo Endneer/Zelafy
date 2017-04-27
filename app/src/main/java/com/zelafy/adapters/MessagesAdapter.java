@@ -18,67 +18,70 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class contains the view holder for viewing added contacts names.
+ * This class contains the view holder for viewing created conversations titles.
  * An Adapter for getting recycler view items from the backend.
  * Avoid unnecessary garbage collection by using RecyclerView and ViewHolders.
- * Created by endneer on 4/20/17.
+ * Created by endneer on 4/17/17.
  */
 
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewHolder> {
 
-    //String[] contactsNamesAsStrings = {"Software group", "OS group", "John", "Doe", "Smith", "Friends"};
-
-    List<String> contactsNames;
-    List<String> contactsIds;
+    List<String> messages;
+    List<String> messagesIds;
     private DatabaseReference mDatabase;
 
-
-    final private ContactClickListener mOnClickListener;
-
-    public interface ContactClickListener {
-        void onContactClick(int clickedContactIndex);
-    }
-
-
-    public ContactsAdapter(ContactClickListener mOnClickListener) {
-        this.mOnClickListener = mOnClickListener;
-        contactsNames = new ArrayList<>();
-        contactsIds = new ArrayList<>();
+    public MessagesAdapter(final String receiverId,final String senderId) {
+        messages = new ArrayList<>();
+        messagesIds = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Users").addChildEventListener(new ChildEventListener() {
+        mDatabase.child("Messages").addChildEventListener(new ChildEventListener() {
+
+            private boolean messageBelongsToThisReceiver(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("receiverId").getValue(String.class).equals(receiverId)
+                       && dataSnapshot.child("senderId").getValue(String.class).equals(senderId) ) {
+                    return true;
+                }
+                return false;
+            }
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String name = dataSnapshot.child("name").getValue(String.class);
-                contactsNames.add(name);
-                contactsIds.add(dataSnapshot.getKey());
-                notifyItemInserted(contactsNames.size() - 1);
+                if (messageBelongsToThisReceiver(dataSnapshot)) {
+                    String messageText = dataSnapshot.child("text").getValue(String.class);
+                    messages.add(messageText);
+                    messagesIds.add(dataSnapshot.getKey());
+                    notifyItemInserted(messages.size() - 1);
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                String name = dataSnapshot.child("name").getValue(String.class);
-                String nameKey = dataSnapshot.getKey();
+                if (messageBelongsToThisReceiver(dataSnapshot)) {
 
-                int nameIndex = contactsIds.indexOf(nameKey);
-                if (nameIndex > -1) {
-                    contactsNames.set(nameIndex, name);
-                    notifyItemChanged(nameIndex);
+                    String messageText = dataSnapshot.child("text").getValue(String.class);
+                    String messageKey = dataSnapshot.getKey();
+
+                    int messageIndex = messagesIds.indexOf(messageKey);
+                    if (messageIndex > -1) {
+                        messages.set(messageIndex, messageText);
+                        notifyItemChanged(messageIndex);
+                    }
                 }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                if (messageBelongsToThisReceiver(dataSnapshot)) {
 
-                String nameKey = dataSnapshot.getKey();
+                    String messageKey = dataSnapshot.getKey();
 
-                int nameIndex = contactsIds.indexOf(nameKey);
-                if (nameIndex > -1) {
-                    contactsNames.remove(nameIndex);
-                    contactsIds.remove(nameIndex);
-                    notifyItemRemoved(nameIndex);
+                    int messageIndex = messagesIds.indexOf(messageKey);
+                    if (messageIndex > -1) {
+                        messages.remove(messageIndex);
+                        messagesIds.remove(messageIndex);
+                        notifyItemRemoved(messageIndex);
+                    }
                 }
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
@@ -92,15 +95,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
 
-    public List<String> getContactsNames() {
-        return contactsNames;
-    }
-
-    public List<String> getContactsIds() {
-        return contactsIds;
-    }
 
     /**
+     *
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
@@ -112,14 +109,16 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
      * @return A new NumberViewHolder that holds the View for each list item
      */
     @Override
-    public ContactsViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public MessagesViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.contacts_list_item;
+        int layoutIdForListItem = R.layout.message_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        ContactsViewHolder viewHolder = new ContactsViewHolder(view);
+        MessagesViewHolder viewHolder = new MessagesViewHolder(view);
+
+
 
         return viewHolder;
     }
@@ -135,36 +134,27 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(ContactsViewHolder holder, int position) {
-        holder.bind(contactsNames.get(position));
+    public void onBindViewHolder(MessagesViewHolder holder, int position) {
+        holder.bind(messages.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return contactsNames.size();
+        return messages.size();
     }
 
+    public class MessagesViewHolder extends RecyclerView.ViewHolder {
 
-    public class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView messageTextView;
 
-        TextView contactName;
-
-        public ContactsViewHolder(View itemView) {
+        public MessagesViewHolder(View itemView) {
             super(itemView);
 
-            contactName = (TextView) itemView.findViewById(R.id.tv_contact_name);
-            itemView.setOnClickListener(this);
+            messageTextView = (TextView) itemView.findViewById(R.id.tv_message);
         }
 
         public void bind(String title) {
-
-            contactName.setText(title);
-        }
-
-        @Override
-        public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onContactClick(clickedPosition);
+            messageTextView.setText(title);
         }
     }
 }
