@@ -30,19 +30,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     List<String> messagesIds;
     private DatabaseReference mDatabase;
 
-    public MessagesAdapter(final String receiverId,final String senderId) {
+    public MessagesAdapter(final String receiverId, final String senderId) {
         messages = new ArrayList<>();
         messagesIds = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Messages").addChildEventListener(new ChildEventListener() {
+        mDatabase.child("Messages").orderByChild("senderId")
+                .equalTo(senderId).addChildEventListener(new ChildEventListener() {
 
             private boolean messageBelongsToThisReceiver(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("receiverId").getValue(String.class).equals(receiverId)
-                       && dataSnapshot.child("senderId").getValue(String.class).equals(senderId) ) {
+                if (dataSnapshot.child("receiverId").getValue(String.class).equals(receiverId)) {
                     return true;
                 }
                 return false;
             }
+
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (messageBelongsToThisReceiver(dataSnapshot)) {
@@ -82,6 +83,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     }
                 }
             }
+
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
@@ -95,9 +97,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     }
 
 
-
     /**
-     *
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
@@ -117,7 +117,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         MessagesViewHolder viewHolder = new MessagesViewHolder(view);
-
 
 
         return viewHolder;
