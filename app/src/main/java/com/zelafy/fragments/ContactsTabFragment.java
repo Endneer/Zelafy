@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zelafy.R;
 import com.zelafy.activities.ChatActivity;
 import com.zelafy.adapters.ContactsAdapter;
@@ -26,6 +28,7 @@ public class ContactsTabFragment extends Fragment implements ContactsAdapter.Con
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
+
 
         /**
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -57,6 +60,11 @@ public class ContactsTabFragment extends Fragment implements ContactsAdapter.Con
         return rootView;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mAdapter.removeChildEventListener();
+    }
 
     @Override
     public void onContactClick(int clickedContactIndex) {

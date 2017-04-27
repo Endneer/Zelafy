@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zelafy.R;
+import com.zelafy.utilities.FirebaseUtils;
 
 public class MeTabFragment extends Fragment {
 
@@ -31,13 +32,16 @@ public class MeTabFragment extends Fragment {
 
         mEmailTextView = (TextView) rootView.findViewById(R.id.tv_user_email);
         mUserNameTextView = (TextView) rootView.findViewById(R.id.tv_user_name);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseUtils.getDatabase().getReference();
         mAuth = FirebaseAuth.getInstance();
 
         mEmailTextView.setText("Email : ");
         mUserNameTextView.setText("Name : ");
 
-        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+
+        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).keepSynced(true);
+        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

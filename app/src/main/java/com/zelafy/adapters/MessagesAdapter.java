@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zelafy.R;
+import com.zelafy.utilities.FirebaseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     List<String> messages;
     List<String> messagesIds;
     private DatabaseReference mDatabase;
+    private ChildEventListener messagesEventListener;
+    String senderId;
 
     public MessagesAdapter(final String receiverId, final String senderId) {
+        this.senderId = senderId;
         messages = new ArrayList<>();
         messagesIds = new ArrayList<>();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Messages").orderByChild("senderId")
-                .equalTo(senderId).addChildEventListener(new ChildEventListener() {
-
+        mDatabase = FirebaseUtils.getDatabase().getReference();
+        messagesEventListener = new ChildEventListener() {
             private boolean messageBelongsToThisReceiver(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("receiverId").getValue(String.class).equals(receiverId)) {
                     return true;
@@ -93,7 +95,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        mDatabase.child("Messages").orderByChild("senderId")
+                .equalTo(senderId).keepSynced(true);
+
+        mDatabase.child("Messages").orderByChild("senderId")
+                .equalTo(senderId).addChildEventListener(messagesEventListener);
+
+    }
+
+    public void removeChildEventListener() {
+        mDatabase.child("Messages").orderByChild("senderId")
+                .equalTo(senderId).removeEventListener(messagesEventListener);
     }
 
 

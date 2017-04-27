@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zelafy.R;
+import com.zelafy.utilities.FirebaseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     List<String> contactsNames;
     List<String> contactsIds;
     private DatabaseReference mDatabase;
+    private ChildEventListener contactsEventListener;
 
 
     final private ContactClickListener mOnClickListener;
@@ -44,8 +48,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         this.mOnClickListener = mOnClickListener;
         contactsNames = new ArrayList<>();
         contactsIds = new ArrayList<>();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Users").addChildEventListener(new ChildEventListener() {
+        mDatabase = FirebaseUtils.getDatabase().getReference();
+        contactsEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String name = dataSnapshot.child("name").getValue(String.class);
@@ -88,9 +92,16 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+
+        mDatabase.child("Users").addChildEventListener(contactsEventListener);
+        mDatabase.child("Users").keepSynced(true);
     }
 
+    public void removeChildEventListener() {
+        mDatabase.child("Users").removeEventListener(contactsEventListener);
+    }
 
     public List<String> getContactsNames() {
         return contactsNames;

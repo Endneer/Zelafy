@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zelafy.activities.RegisterActivity;
 import com.zelafy.fragments.ChatsTabFragment;
 import com.zelafy.fragments.ContactsTabFragment;
 import com.zelafy.fragments.MeTabFragment;
@@ -49,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //Checking if the user is already logged in or not
         mAuth = FirebaseAuth.getInstance();
