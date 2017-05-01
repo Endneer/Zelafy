@@ -11,9 +11,16 @@ import android.view.ViewGroup;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.IgnoreExtraProperties;
 import com.zelafy.R;
 import com.zelafy.activities.ChatActivity;
 import com.zelafy.adapters.ContactsAdapter;
+import com.zelafy.utilities.FirebaseUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ContactsTabFragment extends Fragment implements ContactsAdapter.ContactClickListener {
@@ -67,11 +74,65 @@ public class ContactsTabFragment extends Fragment implements ContactsAdapter.Con
     }
 
     @Override
-    public void onContactClick(int clickedContactIndex) {
+    public void onContactClick(String clickedContactId) {
+
+        // TODO: 30/04/17 Check if there is existing chat between these two users 
+
+        String currentUserId = FirebaseUtils.getAuth().getCurrentUser().getUid();
+        Chat mChat = new Chat();  //send Chat name
+        mChat.addMember(currentUserId);
+        mChat.addMember(clickedContactId);
+
+        String key = FirebaseUtils.getDatabase().getReference().child("Chats").push().getKey();
+
+        Map<String, Object> postValues = mChat.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/Chats/" + key + "/members", postValues);
+        FirebaseUtils.getDatabase().getReference().updateChildren(childUpdates);
+
+        //Set Chat Name
+        FirebaseUtils.getDatabase().getReference().child("Messages").child(key).child("Name").setValue(mChat.getChatName());
+
+
         Intent intent = new Intent(getContext(), ChatActivity.class);
-        String receiverId = mAdapter.getContactsIds().get(clickedContactIndex);
-        intent.putExtra(Intent.EXTRA_TEXT, receiverId);
+        intent.putExtra(Intent.EXTRA_TEXT, clickedContactId);
         startActivity(intent);
     }
+
+    @IgnoreExtraProperties
+    class Chat {
+        List<String> membersIds = new ArrayList<>();
+        String chatName;
+
+        public Chat() {
+            // Default constructor required for calls to DataSnapshot.getValue(Post.class)
+            chatName = null;
+        }
+
+        public Chat(String chatName){
+            this.chatName = chatName;
+        }
+
+        public String getChatName() {
+            return chatName;
+        }
+
+        public void addMember(String member) {
+            membersIds.add(member);
+        }
+
+        public Map toMap() {
+            HashMap<String, Object> result = new HashMap<>();
+            for (int i = 0; i < membersIds.size(); i++) {
+                result.put("member"+(i+1), membersIds.get(i));
+            }
+
+
+            return result;
+        }
+
+    }
+
 }
 

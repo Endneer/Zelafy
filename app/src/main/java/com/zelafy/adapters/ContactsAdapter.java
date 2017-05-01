@@ -13,12 +13,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.zelafy.R;
 import com.zelafy.utilities.FirebaseUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class contains the view holder for viewing added contacts names.
@@ -40,7 +43,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     final private ContactClickListener mOnClickListener;
 
     public interface ContactClickListener {
-        void onContactClick(int clickedContactIndex);
+        void onContactClick(String clickedContactId);
     }
 
 
@@ -103,13 +106,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         mDatabase.child("Users").removeEventListener(contactsEventListener);
     }
 
-    public List<String> getContactsNames() {
-        return contactsNames;
-    }
-
-    public List<String> getContactsIds() {
-        return contactsIds;
-    }
 
     /**
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
@@ -175,7 +171,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onContactClick(clickedPosition);
+            String clickedContactId = contactsIds.get(clickedPosition);
+            mOnClickListener.onContactClick(clickedContactId);
         }
+
+
+
+
     }
 }
