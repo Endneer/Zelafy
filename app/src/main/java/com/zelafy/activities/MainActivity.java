@@ -136,14 +136,10 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
            switch (position){
                case 0:
-                   ChatsTabFragment chatsTabFragment =new ChatsTabFragment();
-                   return chatsTabFragment;
-
-               case 1:
                    ContactsTabFragment contactsTabFragment =new ContactsTabFragment();
                    return contactsTabFragment;
 
-               case 2:
+               case 1:
                    MeTabFragment meTabFragment =new MeTabFragment();
                    return meTabFragment;
 
@@ -155,17 +151,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Chats";
-                case 1:
                     return "Contacts";
-                case 2:
+                case 1:
                     return "Me";
             }
             return null;

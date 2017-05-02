@@ -31,16 +31,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     List<String> messagesIds;
     private DatabaseReference mDatabase;
     private ChildEventListener messagesEventListener;
-    String senderId;
 
-    public MessagesAdapter(final String receiverId, final String senderId) {
-        this.senderId = senderId;
+    public MessagesAdapter(final String otherUserId, final String currentUserId) {
         messages = new ArrayList<>();
         messagesIds = new ArrayList<>();
         mDatabase = FirebaseUtils.getDatabase().getReference();
         messagesEventListener = new ChildEventListener() {
             private boolean messageBelongsToThisReceiver(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("receiverId").getValue(String.class).equals(receiverId)) {
+                if ((dataSnapshot.child("receiver_id").getValue(String.class).equals(otherUserId) && dataSnapshot.child("sender_id").getValue(String.class).equals(currentUserId))
+                        || (dataSnapshot.child("sender_id").getValue(String.class).equals(otherUserId) && dataSnapshot.child("receiver_id").getValue(String.class).equals(currentUserId))) {
                     return true;
                 }
                 return false;
@@ -97,17 +96,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             }
         };
 
-        mDatabase.child("Messages").orderByChild("senderId")
-                .equalTo(senderId).keepSynced(true);
+        mDatabase.child("Messages").keepSynced(true);
 
-        mDatabase.child("Messages").orderByChild("senderId")
-                .equalTo(senderId).addChildEventListener(messagesEventListener);
+        mDatabase.child("Messages").addChildEventListener(messagesEventListener);
 
     }
 
     public void removeChildEventListener() {
-        mDatabase.child("Messages").orderByChild("senderId")
-                .equalTo(senderId).removeEventListener(messagesEventListener);
+        mDatabase.child("Messages").removeEventListener(messagesEventListener);
     }
 
 

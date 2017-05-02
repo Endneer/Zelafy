@@ -95,8 +95,8 @@ public class ChatActivity extends AppCompatActivity {
         public Map toMap() {
             HashMap<String, Object> result = new HashMap<>();
             result.put("text", text);
-            result.put("senderId", senderId);
-            result.put("receiverId", receiverId);
+            result.put("sender_id", senderId);
+            result.put("receiver_id", receiverId);
 
             return result;
         }
