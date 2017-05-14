@@ -3,20 +3,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_sml"
+    android:paddingEnd="@dimen/padding_min"
+    android:paddingLeft="@dimen/padding_avg"
+    android:paddingRight="@dimen/padding_avg"
+    android:paddingStart="@dimen/padding_min"
+    android:paddingTop="@dimen/padding_sml">
 
-    <TextView
-        android:id="@+id/tv_contact_name"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_height="wrap_content">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#dadada"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" />
+        <TextView
+            android:id="@+id/tv_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_contact_name"
+            android:layout_alignBottom="@+id/tv_contact_name"
+            android:layout_alignLeft="@+id/view2"
+            android:layout_alignStart="@+id/view2"
+            android:background="@drawable/circle_accent"
+            android:gravity="center"
+            android:maxEms="1"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_contact_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view2"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@+id/tv_circle"
+            android:layout_toRightOf="@+id/tv_circle"
+            android:padding="12dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#dadada" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email@mail.com"
+            tools:text="Email@mail.com"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_alignBottom="@+id/tv_contact_name"
+            android:layout_alignLeft="@+id/tv_contact_name"
+            android:layout_alignStart="@+id/tv_contact_name"
+            />
+
+    </RelativeLayout>
 
 </LinearLayout>

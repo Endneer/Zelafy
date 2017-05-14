@@ -33,6 +33,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     List<String> contactsNames;
     List<String> contactsIds;
+    List<String> contactsEmails;
     private DatabaseReference mDatabase;
     private ChildEventListener contactsEventListener;
 
@@ -48,12 +49,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         this.mOnClickListener = mOnClickListener;
         contactsNames = new ArrayList<>();
         contactsIds = new ArrayList<>();
+        contactsEmails = new ArrayList<>();
         mDatabase = FirebaseUtils.getDatabase().getReference();
         contactsEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String name = dataSnapshot.child("name").getValue(String.class);
+                String email = dataSnapshot.child("email").getValue(String.class);
                 contactsNames.add(name);
+                contactsEmails.add(email);
                 contactsIds.add(dataSnapshot.getKey());
                 notifyItemInserted(contactsNames.size() - 1);
             }
@@ -62,10 +66,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String name = dataSnapshot.child("name").getValue(String.class);
                 String nameKey = dataSnapshot.getKey();
+                String email = dataSnapshot.child("email").getValue(String.class);
 
                 int nameIndex = contactsIds.indexOf(nameKey);
                 if (nameIndex > -1) {
                     contactsNames.set(nameIndex, name);
+                    contactsEmails.set(nameIndex, email);
                     notifyItemChanged(nameIndex);
                 }
             }
@@ -79,6 +85,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
                 if (nameIndex > -1) {
                     contactsNames.remove(nameIndex);
                     contactsIds.remove(nameIndex);
+                    contactsEmails.remove(nameIndex);
                     notifyItemRemoved(nameIndex);
                 }
             }
@@ -147,7 +154,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
      */
     @Override
     public void onBindViewHolder(ContactsViewHolder holder, int position) {
-        holder.bind(contactsNames.get(position));
+        holder.bind(contactsNames.get(position),contactsEmails.get(position));
     }
 
     @Override
@@ -159,17 +166,26 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     public class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView contactName;
+        String contactNameFirstChar;
+        TextView firstChar;
+        TextView contactEmail;
 
         public ContactsViewHolder(View itemView) {
             super(itemView);
 
             contactName = (TextView) itemView.findViewById(R.id.tv_contact_name);
+            firstChar = (TextView) itemView.findViewById(R.id.tv_circle);
+            contactEmail = (TextView) itemView.findViewById(R.id.tv_email);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(String title) {
+        public void bind(String name, String email) {
 
-            contactName.setText(title);
+            contactName.setText(name);
+            contactNameFirstChar = name.substring(0,1);
+            firstChar.setText(contactNameFirstChar);
+            contactEmail.setText(email);
+
         }
 
         @Override
