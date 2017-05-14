@@ -55,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/prompt_password"
+                    android:layout_marginTop="30dp"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -67,19 +68,28 @@
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="30dp"
+                android:background="@color/colorPrimary"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:textColor="#FFECEAEA"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                />
 
-            <TextView
-                android:layout_width="87dp"
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="150dp"
-                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:background="@color/colorPrimary"
                 android:onClick="Registering"
-                android:text="Register" />
+                android:text="Register"
+                android:textColor="#FFECEAEA"
+
+                />
 
         </LinearLayout>
     </ScrollView>

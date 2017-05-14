@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zelafy.RegisterActivity">
+    tools:context="com.zelafy.activities.RegisterActivity"
+    >
 
     <EditText
         android:id="@+id/RegisterName"
@@ -49,11 +50,15 @@
 
     <Button
         android:id="@+id/RegisterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_below="@+id/RegisterPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
-        android:text="Register" />
+        android:text="Register"
+        android:background="@layout/rounded_button"
+        android:textColor="#FFECEAEA"
+
+        />
 
 </RelativeLayout>
