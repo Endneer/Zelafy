@@ -18,6 +18,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <!--Strings related to chat-->
-    <string name="hint_enter_message">Enter your message here!</string>
+    <string name="hint_enter_a_message">Enter your message here!</string>
     <string name="action_send">Send</string>
 </resources>

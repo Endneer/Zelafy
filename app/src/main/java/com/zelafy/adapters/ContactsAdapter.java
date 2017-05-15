@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zelafy.R;
 import com.zelafy.utilities.FirebaseUtils;
+import com.zelafy.utilities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +32,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     //String[] contactsNamesAsStrings = {"Software group", "OS group", "John", "Doe", "Smith", "Friends"};
 
-    List<String> contactsNames;
     List<String> contactsIds;
-    List<String> contactsEmails;
+    List<User> users;
     private DatabaseReference mDatabase;
     private ChildEventListener contactsEventListener;
 
@@ -47,19 +47,17 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     public ContactsAdapter(ContactClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
-        contactsNames = new ArrayList<>();
         contactsIds = new ArrayList<>();
-        contactsEmails = new ArrayList<>();
+        users = new ArrayList<>();
         mDatabase = FirebaseUtils.getDatabase().getReference();
         contactsEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String name = dataSnapshot.child("name").getValue(String.class);
                 String email = dataSnapshot.child("email").getValue(String.class);
-                contactsNames.add(name);
-                contactsEmails.add(email);
+                users.add(new User(dataSnapshot.getKey(), email, name, null));
                 contactsIds.add(dataSnapshot.getKey());
-                notifyItemInserted(contactsNames.size() - 1);
+                notifyItemInserted(users.size() - 1);
             }
 
             @Override
@@ -70,8 +68,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
                 int nameIndex = contactsIds.indexOf(nameKey);
                 if (nameIndex > -1) {
-                    contactsNames.set(nameIndex, name);
-                    contactsEmails.set(nameIndex, email);
+                    users.set(nameIndex, new User(dataSnapshot.getKey(), email, name, null));
                     notifyItemChanged(nameIndex);
                 }
             }
@@ -82,10 +79,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
                 String nameKey = dataSnapshot.getKey();
 
                 int nameIndex = contactsIds.indexOf(nameKey);
+
                 if (nameIndex > -1) {
-                    contactsNames.remove(nameIndex);
+                    users.remove(nameIndex);
                     contactsIds.remove(nameIndex);
-                    contactsEmails.remove(nameIndex);
                     notifyItemRemoved(nameIndex);
                 }
             }
@@ -110,12 +107,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         mDatabase.child("Users").removeEventListener(contactsEventListener);
     }
 
-    public List<String> getContactsNames() {
-        return contactsNames;
-    }
-
-    public List<String> getContactsIds() {
-        return contactsIds;
+    public List<User> getUsers() {
+        return users;
     }
 
     /**
@@ -154,12 +147,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
      */
     @Override
     public void onBindViewHolder(ContactsViewHolder holder, int position) {
-        holder.bind(contactsNames.get(position),contactsEmails.get(position));
+        holder.bind(users.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return contactsNames.size();
+        return users.size();
     }
 
 
@@ -179,12 +172,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             itemView.setOnClickListener(this);
         }
 
-        public void bind(String name, String email) {
+        public void bind(User user) {
 
-            contactName.setText(name);
-            contactNameFirstChar = name.substring(0,1);
+            contactName.setText(user.getName());
+            contactNameFirstChar = user.getName().substring(0,1);
             firstChar.setText(contactNameFirstChar);
-            contactEmail.setText(email);
+            contactEmail.setText(user.getEmail());
 
         }
 

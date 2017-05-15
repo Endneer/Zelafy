@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.zelafy.R;
 import com.zelafy.activities.ChatActivity;
 import com.zelafy.adapters.ContactsAdapter;
+import com.zelafy.utilities.User;
 
 
 public class ContactsTabFragment extends Fragment implements ContactsAdapter.ContactClickListener {
@@ -69,8 +70,9 @@ public class ContactsTabFragment extends Fragment implements ContactsAdapter.Con
     @Override
     public void onContactClick(int clickedContactIndex) {
         Intent intent = new Intent(getContext(), ChatActivity.class);
-        String receiverId = mAdapter.getContactsIds().get(clickedContactIndex);
-        intent.putExtra(Intent.EXTRA_TEXT, receiverId);
+        User otherUser = mAdapter.getUsers().get(clickedContactIndex);
+        intent.putExtra("otherUserId", otherUser.getId());
+        intent.putExtra("otherUserName", otherUser.getName());
         startActivity(intent);
     }
 }

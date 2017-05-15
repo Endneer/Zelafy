@@ -1,92 +1,154 @@
 package com.zelafy.activities;
 
 import android.content.Intent;
-import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.stfalcon.chatkit.messages.MessageInput;
+import com.stfalcon.chatkit.messages.MessagesList;
+import com.stfalcon.chatkit.messages.MessagesListAdapter;
+import com.stfalcon.chatkit.utils.DateFormatter;
 import com.zelafy.R;
-import com.zelafy.adapters.MessagesAdapter;
+import com.zelafy.utilities.User;
+import com.zelafy.utilities.Message;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
 
-    MessagesAdapter mAdapter;
-    RecyclerView mMessagesList;
-    String receiverId;
-    String senderId;
-    Button mSendButton;
-    EditText mMessageEditText;
+    MessagesList messagesList;
+    String otherUserId;
+    String currentUserId;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private MessagesListAdapter<Message> adapter;
+    private ChildEventListener messagesEventListener;
+    private String otherUserName;
+    private MessageInput inputView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        mMessagesList = (RecyclerView) findViewById(R.id.rv_messages);
-        mSendButton = (Button) findViewById(R.id.btn_send);
-        mMessageEditText = (EditText) findViewById(R.id.et_message_to_be_sent);
+        messagesList = (MessagesList) findViewById(R.id.messagesList);
+        inputView = (MessageInput) findViewById(R.id.input);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mMessagesList.setLayoutManager(linearLayoutManager);
-
         Intent intent = getIntent();
-        receiverId = intent.getStringExtra(Intent.EXTRA_TEXT);
+        otherUserId = intent.getStringExtra("otherUserId");
+        otherUserName = intent.getStringExtra("otherUserName");
 
-        senderId = mAuth.getCurrentUser().getUid();
+        setTitle(otherUserName);
 
-        mAdapter = new MessagesAdapter(receiverId, senderId);
-        mMessagesList.setAdapter(mAdapter);
+        currentUserId = mAuth.getCurrentUser().getUid();
 
-        mSendButton.setOnClickListener(new View.OnClickListener() {
+        messagesEventListener = new ChildEventListener() {
+            private boolean messageBelongsToThisReceiver(DataSnapshot dataSnapshot) {
+                if ((dataSnapshot.child("receiver_id").getValue(String.class).equals(otherUserId) && dataSnapshot.child("sender_id").getValue(String.class).equals(currentUserId))
+                        || (dataSnapshot.child("sender_id").getValue(String.class).equals(otherUserId) && dataSnapshot.child("receiver_id").getValue(String.class).equals(currentUserId))) {
+                    return true;
+                }
+                return false;
+            }
+
             @Override
-            public void onClick(View v) {
-                String textToBeSent = mMessageEditText.getText().toString();
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (messageBelongsToThisReceiver(dataSnapshot)) {
+                    String messageText = dataSnapshot.child("text").getValue(String.class);
+                    User user = new User(dataSnapshot.child("sender_id").getValue(String.class), null, null, null);
+                    Message message = new Message(dataSnapshot.getKey(), user, messageText);
+                    adapter.addToStart(message, true);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        mDatabase.child("Messages").keepSynced(true);
+
+        mDatabase.child("Messages").addChildEventListener(messagesEventListener);
+
+
+
+
+
+        adapter = new MessagesListAdapter<>(currentUserId, null);
+        messagesList.setAdapter(adapter);
+
+        inputView.setInputListener(new MessageInput.InputListener() {
+            @Override
+            public boolean onSubmit(CharSequence input) {
 
                 String key = mDatabase.child("Messages").push().getKey();
 
-                Message messageToBeSent = new Message(textToBeSent, senderId, receiverId);
+                SentMessage messageToBeSent = new SentMessage(input.toString(), currentUserId, otherUserId);
 
                 Map<String, Object> postValues = messageToBeSent.toMap();
 
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/Messages/" + key, postValues);
 
-                mDatabase.updateChildren(childUpdates);
-
-                mMessageEditText.setText("");
+                return true;
             }
         });
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeChildEventListener();
+    }
+
+    public void removeChildEventListener() {
+        mDatabase.child("Messages").removeEventListener(messagesEventListener);
+    }
+
+
     @IgnoreExtraProperties
-    class Message {
+    class SentMessage {
         String text;
         String senderId;
         String receiverId;
 
-        public Message() {
+        public SentMessage() {
             // Default constructor required for calls to DataSnapshot.getValue(Post.class)
         }
 
-        public Message(String text, String senderId, String receiverId) {
+        public SentMessage(String text, String senderId, String receiverId) {
             this.text = text;
             this.senderId = senderId;
             this.receiverId = receiverId;

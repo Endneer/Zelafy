@@ -5,4 +5,6 @@
     <color name="colorAccent">#990046</color>
     <color name="background_material_light">#eceaea</color>
     <color name="foreground_material_light">#000000</color>
+    <color name="text_on_primary_background">#ffffff</color>
+    <color name="text_on_accent_background">#ffffff</color>
 </resources>
