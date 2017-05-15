@@ -28,6 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        app:inputButtonDefaultBgColor="@color/colorPrimary"
+        app:inputButtonDefaultBgPressedColor="@color/colorPrimary"
         app:inputHint="@string/hint_enter_a_message"/>
 
     <!--<LinearLayout-->
