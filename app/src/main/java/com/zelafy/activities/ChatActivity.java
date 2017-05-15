@@ -121,6 +121,8 @@ public class ChatActivity extends AppCompatActivity {
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/Messages/" + key, postValues);
 
+                mDatabase.updateChildren(childUpdates);
+
                 return true;
             }
         });
