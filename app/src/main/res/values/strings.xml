@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zelafy</string>
+    <string name="app_name">Messenger</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
