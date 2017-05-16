@@ -1,5 +1,6 @@
 package com.zelafy.utilities;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
@@ -8,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseUtils {
     private static FirebaseDatabase mDatabase;
+    private static FirebaseAuth mAuth;
 
     public static FirebaseDatabase getDatabase() {
         if (mDatabase == null) {
@@ -15,5 +17,10 @@ public class FirebaseUtils {
             mDatabase.setPersistenceEnabled(true);
         }
         return mDatabase;
+    }
+
+    public static FirebaseAuth getAuth() {
+        mAuth = FirebaseAuth.getInstance();
+        return mAuth;
     }
 }

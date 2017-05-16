@@ -92,6 +92,11 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthStateListener);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthStateListener);
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.

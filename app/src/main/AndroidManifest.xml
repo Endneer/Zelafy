@@ -9,13 +9,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <service
-        android:name=".MyFirebaseMessagingService">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-        </intent-filter>
-    </service>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,6 +21,7 @@
             android:name=".activities.LoginActivity"
             android:noHistory="true"
             android:label="@string/app_name">
+            android:configChanges="orientation|screenSize"
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,9 +32,11 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".activities.ChatActivity"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -48,12 +44,28 @@
         </activity>
 
         <activity android:name=".activities.RegisterActivity"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".activities.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.LoginActivity" />
         </activity>
 
+
+        <service
+            android:name=".services.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
     </application>
+
+    <service
+        android:name=".services.MyFirebaseMessagingService">
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+        </intent-filter>
+    </service>
 
 </manifest>

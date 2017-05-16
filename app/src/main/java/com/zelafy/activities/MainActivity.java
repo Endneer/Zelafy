@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zelafy.fragments.ChatsTabFragment;
 import com.zelafy.fragments.ContactsTabFragment;
 import com.zelafy.fragments.MeTabFragment;
 import com.zelafy.R;
