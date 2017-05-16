@@ -13,15 +13,12 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_above="@+id/input"
-        app:incomingTimeTextSize="0sp"
-        app:outcomingTimeTextSize="0sp"
         app:incomingDefaultBubbleColor="@color/colorAccent"
         app:incomingDefaultBubblePressedColor="@color/colorAccent"
         app:outcomingDefaultBubbleColor="@color/colorPrimary"
         app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
         app:incomingTextColor="@color/text_on_accent_background"
-        app:outcomingTextColor="@color/text_on_primary_background"
-        app:dateHeaderTextSize="0sp" />
+        app:outcomingTextColor="@color/text_on_primary_background" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
@@ -31,27 +28,6 @@
         app:inputButtonDefaultBgColor="@color/colorPrimary"
         app:inputButtonDefaultBgPressedColor="@color/colorPrimary"
         app:inputHint="@string/hint_enter_a_message"/>
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal">-->
-
-
-        <!--<EditText-->
-            <!--android:id="@+id/et_message_to_be_sent"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:hint="@string/hint_enter_a_message" />-->
-
-        <!--<Button-->
-            <!--android:id="@+id/btn_send"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/action_send" />-->
-
-    <!--</LinearLayout>-->
 
 
 </LinearLayout>

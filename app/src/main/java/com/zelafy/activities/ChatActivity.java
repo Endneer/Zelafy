@@ -1,11 +1,8 @@
 package com.zelafy.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -14,13 +11,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.ServerValue;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.zelafy.R;
-import com.zelafy.utilities.User;
 import com.zelafy.utilities.Message;
+import com.zelafy.utilities.User;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -70,8 +68,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (messageBelongsToThisReceiver(dataSnapshot)) {
                     String messageText = dataSnapshot.child("text").getValue(String.class);
+                    Long timeStamp = dataSnapshot.child("time_stamp").getValue(Long.class);
                     User user = new User(dataSnapshot.child("sender_id").getValue(String.class), null, null, null);
-                    Message message = new Message(dataSnapshot.getKey(), user, messageText);
+                    Message message = new Message(dataSnapshot.getKey(), user, messageText, new Date(timeStamp));
                     adapter.addToStart(message, true);
                 }
             }
@@ -102,10 +101,19 @@ public class ChatActivity extends AppCompatActivity {
         mDatabase.child("Messages").addChildEventListener(messagesEventListener);
 
 
-
-
-
         adapter = new MessagesListAdapter<>(currentUserId, null);
+        adapter.setDateHeadersFormatter(new DateFormatter.Formatter() {
+            @Override
+            public String format(Date date) {
+                if (DateFormatter.isToday(date)) {
+                    return getString(R.string.date_header_today);
+                } else if (DateFormatter.isYesterday(date)) {
+                    return getString(R.string.date_header_yesterday);
+                } else {
+                    return DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH_YEAR);
+                }
+            }
+        });
         messagesList.setAdapter(adapter);
 
         inputView.setInputListener(new MessageInput.InputListener() {
@@ -114,7 +122,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 String key = mDatabase.child("Messages").push().getKey();
 
-                SentMessage messageToBeSent = new SentMessage(input.toString(), currentUserId, otherUserId);
+                SentMessage messageToBeSent = new SentMessage(input.toString(), currentUserId, otherUserId, ServerValue.TIMESTAMP);
 
                 Map<String, Object> postValues = messageToBeSent.toMap();
 
@@ -145,15 +153,17 @@ public class ChatActivity extends AppCompatActivity {
         String text;
         String senderId;
         String receiverId;
+        Map<String, String> timeStamp;
 
         public SentMessage() {
             // Default constructor required for calls to DataSnapshot.getValue(Post.class)
         }
 
-        public SentMessage(String text, String senderId, String receiverId) {
+        public SentMessage(String text, String senderId, String receiverId, Map<String, String> timeStamp) {
             this.text = text;
             this.senderId = senderId;
             this.receiverId = receiverId;
+            this.timeStamp = timeStamp;
         }
 
         public Map toMap() {
@@ -161,6 +171,7 @@ public class ChatActivity extends AppCompatActivity {
             result.put("text", text);
             result.put("sender_id", senderId);
             result.put("receiver_id", receiverId);
+            result.put("time_stamp", timeStamp);
 
             return result;
         }

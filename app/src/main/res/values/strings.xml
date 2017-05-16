@@ -20,4 +20,8 @@
     <!--Strings related to chat-->
     <string name="hint_enter_a_message">Enter your message here!</string>
     <string name="action_send">Send</string>
+
+    <!--Date headers-->
+    <string name="date_header_today">Today</string>
+    <string name="date_header_yesterday">Yesterday</string>
 </resources>
